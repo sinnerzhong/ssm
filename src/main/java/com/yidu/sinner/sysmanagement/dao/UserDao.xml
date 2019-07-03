@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.yidu.sinner.sysmanagement.dao.UserDao">
+
+	<select id="findUserByIdQuery" parameterType="string"
+		resultType="User">
+		select * from t_user where userId = #{userId}
+	</select>
+
+	<update id="updateUserU" parameterType="User">
+		update t_user 
+		set userName = #{userName},password= #{password},telephone=#{telephone}
+		where userId = #{userId}
+	</update>
+
+	<select id="findAllUserQuery" resultType="User">
+		select * from t_user where status=1
+	</select>
+
+
+	<!-- 带条件的分页查询,如果条件为空，就是查询所有用户，并做分页 -->
+	<select id="userPageQuery" parameterType="hashmap" resultType="User">
+		select * from t_user u, t_organization o where u.orgId = o.orgId
+		<if test="userName!=null">
+			and u.userName like '%${userName}%'
+		</if>
+		<if test="gender!=null">
+			and u.gender like '%${gender}%'
+		</if>
+		<if test="lowBirthday!=null and lowBirthday!=''">
+			and u.birthday >= #{lowBirthday}
+		</if>
+		<if test="highBirthday!=null and highBirthday!=''">
+			and u.birthday &lt;= #{highBirthday}
+		</if>
+		<if test="offset!=null and limit!=null">
+			limit #{offset},#{limit}
+		</if>
+	</select>
+	
+	<!-- 查询总记录数 -->
+	<select id="userCountPageQuery" parameterType="hashmap"
+		resultType="int">
+		select COUNT(*) from t_user u, t_organization o where u.orgId =
+		o.orgId
+		<if test="userName!=null">
+			and u.userName like '%${userName}%'
+		</if>
+		<if test="gender!=null">
+			and u.gender like '%${gender}%'
+		</if>
+		<if test="lowBirthday!=null and lowBirthday!=''">
+			and u.birthday >= #{lowBirthday}
+		</if>
+		<if test="highBirthday!=null and highBirthday!=''">
+			and u.birthday &lt;= #{highBirthday}
+		</if>
+	</select>
+
+	<!-- 添加的sql语句 -->
+	<insert id="addUserU" parameterType="User">
+		<!-- insert into
+		t_user(userId,userName,password,salary,birthday,gender,orgId,telephone,status)
+		values(#{userId},#{userName},#{password},#{salary},#{birthday},#{gender},#{orgId},#{telephone},0) -->
+		insert into
+		t_user(userId,userName,password,salary,gender,telephone,status)
+		values(#{userId},#{userName},#{password},#{salary},'男',#{telephone},1)
+	</insert>
+
+	<!-- 逻辑删除的sql语句 -->
+	<delete id="deleteUserU" parameterType="String">
+		update t_user set status = 0 where userId = #{userId}
+	</delete>
+
+	<!-- 查询所有的组织结构 -->
+	<select id="findAllOrganizationQuery" resultType="Organization">
+		select * from t_organization
+	</select>
+
+	<!-- 恢复用户的sql语句 -->
+	<update id="regainUserU" parameterType="String">
+		update t_user set status = 1 where userId = #{userId}
+	</update>
+
+</mapper>
