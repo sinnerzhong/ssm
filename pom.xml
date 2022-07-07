@@ -10,7 +10,7 @@
 		<!-- 指定源代码的编码方式 -->
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<!-- 定义spring framework的版本 -->
-		<springframework.version>4.3.10.RELEASE</springframework.version>
+		<springframework.version>5.2.21.RELEASE</springframework.version>
 	</properties>
 	
 	<!-- 添加依赖 -->
